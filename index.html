@@ -28,7 +28,7 @@
         .search-box input { background: none; border: none; width: 100%; font-family: inherit; margin-left: 10px; }
 
         .category-nav { display: flex; overflow-x: auto; background: #fff; padding: 10px 15px; gap: 10px; border-bottom: 1px solid #eee; scrollbar-width: none; position: sticky; top: 52px; z-index: 101; }
-        .cat-item { background: var(--gray); padding: 8px 18px; border-radius: 20px; white-space: nowrap; font-size: 13px; font-weight: 600; }
+        .cat-item { background: var(--gray); padding: 8px 18px; border-radius: 20px; white-space: nowrap; font-size: 13px; font-weight: 600; cursor: pointer; }
         .cat-item.active { background: var(--primary); color: white; }
 
         .container { max-width: 500px; margin: auto; padding: 15px; }
@@ -37,11 +37,12 @@
         .product-card { display: flex; background: white; padding: 12px; margin-bottom: 12px; border-radius: 15px; border: 1px solid #f0f0f0; gap: 12px; align-items: center; cursor: pointer; }
         .product-info { flex: 1; }
         .product-info h3 { margin: 0; font-size: 14px; }
-        .product-info p { font-size: 11px; color: #777; margin: 5px 0; }
+        .product-info p { font-size: 11px; color: #777; margin: 5px 0; line-height: 1.3; }
         .product-price { color: #2d6a4f; font-weight: 700; }
-        .product-img { width: 80px; height: 80px; border-radius: 12px; object-fit: cover; }
+        .product-img { width: 85px; height: 85px; border-radius: 12px; object-fit: cover; background: #eee; display: flex; align-items: center; justify-content: center; color: #ccc;}
 
-        #back-to-top { position: fixed; bottom: 100px; right: 20px; background: var(--dark); color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 99; border: 2px solid var(--primary); cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        /* BOTÃO VOLTAR AO TOPO */
+        #back-to-top { position: fixed; bottom: 100px; right: 20px; background: var(--primary); color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 999; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         #back-to-top.show { opacity: 1; visibility: visible; }
 
         .cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--primary); color: white; padding: 18px; border-radius: 50px; display: flex; justify-content: space-between; z-index: 1000; font-weight: 700; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.2); cursor: pointer; }
@@ -49,13 +50,9 @@
         .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; z-index:2000; align-items:flex-end; }
         .modal-content { background:white; width:100%; border-radius:25px 25px 0 0; padding:25px; max-height:95vh; overflow-y:auto; }
         
-        .checkout-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .upsell-box { background: #fff9e6; padding: 15px; border-radius: 12px; margin: 15px 0; border: 1px dashed var(--gold); }
-        .option-group { margin: 15px 0; }
-        .option-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
-        select, input[type="text"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-family: inherit; margin-bottom: 10px; font-size: 14px; }
-        .btn-confirm { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; }
-        .btn-remove { color: var(--primary); border: none; background: none; font-size: 12px; cursor: pointer; padding: 5px 0; }
+        .checkout-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
+        .btn-confirm { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; }
+        select, input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-family: inherit; margin-bottom: 10px; }
 
         footer { background: #111; color: #fff; padding: 40px 20px; text-align: center; font-size: 13px; }
         .dev-by { margin-top: 15px; color: #666; }
@@ -74,11 +71,11 @@
 </header>
 
 <div class="tabs-nav">
-    <div class="tab-btn active" onclick="switchPage('menu')">Cardápio</div>
-    <div class="tab-btn" onclick="switchPage('reviews')">Avaliações</div>
+    <div class="tab-btn active">Cardápio</div>
+    <div class="tab-btn">Avaliações</div>
 </div>
 
-<div id="page-menu" class="page-content active">
+<div id="page-menu">
     <div class="search-container">
         <div class="search-box">
             <i class="fas fa-search"></i>
@@ -89,9 +86,12 @@
     <div class="container" id="menu-sections"></div>
 </div>
 
+<div id="back-to-top" onclick="scrollToTop()">
+    <i class="fas fa-arrow-up"></i>
+</div>
+
 <div class="modal-overlay" id="product-modal">
     <div class="modal-content">
-        <img id="m-img" src="" style="width:100%; height:200px; object-fit:cover; border-radius:15px; margin-bottom:15px;">
         <h2 id="m-title" style="margin:0;"></h2>
         <p id="m-desc" style="color:#666; font-size:14px; margin:10px 0;"></p>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -102,190 +102,185 @@
                 <button onclick="changeQty(1)" style="border:none; background:none; font-size:18px; color:var(--primary);">+</button>
             </div>
         </div>
-        <textarea id="m-obs" placeholder="Alguma observação? (Ex: Sem cebola)" style="width:100%; height:60px; border-radius:10px; border:1px solid #ddd; padding:10px; margin-bottom:15px; font-family:inherit;"></textarea>
-        <button id="btn-add-cart" class="btn-confirm" onclick="addToCart()">Adicionar ao Pedido</button>
-        <button onclick="closeModals()" style="width:100%; background:none; border:none; color:#999; margin-top:15px;">Voltar ao cardápio</button>
+        <textarea id="m-obs" placeholder="Alguma observação? (Ex: Sem cebola...)" style="width:100%; height:80px; border-radius:10px; border:1px solid #ddd; padding:10px; margin-bottom:15px; font-family:inherit;"></textarea>
+        <button class="btn-confirm" onclick="addToCart()">Adicionar ao Pedido</button>
+        <button onclick="closeModals()" style="width:100%; background:none; border:none; color:#999; margin-top:15px;">Cancelar</button>
     </div>
 </div>
 
 <div class="modal-overlay" id="checkout-modal">
     <div class="modal-content">
-        <h2 style="margin-top:0;">Revisar Pedido</h2>
+        <h2 style="margin-top:0;">Meu Pedido</h2>
         <div id="checkout-items"></div>
         
-        <div class="upsell-box">
-            <div style="font-weight:700; font-size:14px; margin-bottom:10px;">🍟 Que tal turbinar seu pedido?</div>
-            <button onclick="quickAdd('Batata P', 8.00)" style="font-size:12px; padding:8px; border-radius:20px; border:1px solid var(--gold); background:white;">+ Batata P (+R$ 8)</button>
-            <button onclick="quickAdd('Coca Lata', 6.00)" style="font-size:12px; padding:8px; border-radius:20px; border:1px solid var(--gold); background:white; margin-left:5px;">+ Coca Lata (+R$ 6)</button>
-        </div>
-
-        <div class="option-group">
-            <label>Entrega ou Retirada?</label>
-            <select id="delivery-type" onchange="toggleAddress()">
-                <option value="entrega">Entrega (Taxa a combinar)</option>
-                <option value="retirada">Retirada na Loja</option>
-            </select>
-        </div>
+        <label style="font-size:13px; font-weight:600; margin-top:15px; display:block;">Tipo de Entrega</label>
+        <select id="delivery-type" onchange="toggleAddress()">
+            <option value="entrega">Entrega (Taxa a combinar / Grátis P10)</option>
+            <option value="retirada">Retirada na Loja</option>
+        </select>
 
         <div id="address-fields">
             <input type="text" id="cust-name" placeholder="Seu Nome">
-            <input type="text" id="cust-address" placeholder="Endereço Completo (Rua, Número, Bairro)">
-            <p style="font-size: 11px; color: var(--open); margin: -5px 0 10px 5px;">*Entregas no Parque 10 são grátis!</p>
+            <input type="text" id="cust-address" placeholder="Endereço Completo">
         </div>
 
-        <div class="option-group">
-            <label>Forma de Pagamento</label>
-            <select id="payment-method">
-                <option value="Pix">Pix</option>
-                <option value="Cartão">Cartão (Débito/Crédito)</option>
-                <option value="Dinheiro">Dinheiro</option>
-            </select>
-        </div>
+        <label style="font-size:13px; font-weight:600;">Pagamento</label>
+        <select id="payment-method">
+            <option value="Pix">Pix</option>
+            <option value="Cartão">Cartão</option>
+            <option value="Dinheiro">Dinheiro</option>
+        </select>
 
-        <div style="display:flex; justify-content:space-between; font-weight:700; font-size:18px; margin:20px 0;">
+        <div style="display:flex; justify-content:space-between; font-weight:700; font-size:18px; margin:20px 0; border-top: 1px solid #eee; padding-top:15px;">
             <span>Total:</span>
             <span id="checkout-total">R$ 0,00</span>
         </div>
 
-        <button class="btn-confirm" onclick="sendWhatsApp()" style="background: var(--whatsapp); height: 60px;">
+        <button class="btn-confirm" onclick="sendWhatsApp()" style="background: var(--whatsapp);">
             <i class="fab fa-whatsapp"></i> Finalizar Pedido
         </button>
-        <button onclick="closeModals()" style="width:100%; background:none; border:none; color:#999; margin-top:15px;">Adicionar mais itens</button>
+        <button onclick="closeModals()" style="width:100%; background:none; border:none; color:#999; margin-top:15px;">Continuar Comprando</button>
     </div>
 </div>
 
-<div id="back-to-top" onclick="scrollToTop()">
-    <i class="fas fa-chevron-up"></i>
-</div>
-
 <div class="cart-bar" id="cart-bar" onclick="openCheckout()">
-    <span>🛒 Ver Pedido</span>
+    <span>🛒 Ver Sacola</span>
     <span id="cart-total-bar">R$ 0,00</span>
 </div>
 
 <footer>
-    <div style="margin-bottom:15px;">
-        <a href="https://www.instagram.com/burguerja_/" target="_blank" style="color:white; font-size:20px; margin:0 10px;"><i class="fab fa-instagram"></i></a>
-        <a href="https://wa.me/5592982876189" target="_blank" style="color:white; font-size:20px; margin:0 10px;"><i class="fab fa-whatsapp"></i></a>
-    </div>
-    <strong>Burguer Já &copy; 2024</strong><br>
-    Manaus - AM
-    <div class="dev-by">
-        Desenvolvido por: <a href="https://www.instagram.com/nosdoisagencia/" target="_blank">Nós Dois Agência</a>
-    </div>
+    <strong>Burguer Já &copy; 2026</strong><br>
+    Rua Lindon Johnson, #29, Parque Dez
+    <div class="dev-by">Desenvolvido por: <a href="#">Nós Dois Agência</a></div>
 </footer>
 
 <script>
     const menuData = [
-        { cat: "🎁 Promoções & Combos", items: [
-            {n: "Combo 1 (X-Salada + Batata P + Refri)", p: 21, d: "X-salada artesanal 60g + batata frita P + Guaraná lata 350ml.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"},
-            {n: "Combo 2 (2 X-Saladas + Batata M + Refri 1L)", p: 35, d: "2 X-saladas 60g + batata M + Guaraná 1L.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"},
-            {n: "Combo 3 (3 X-Saladas + Refri 1L)", p: 37, d: "3 X-saladas artesanais 60g + Guaraná 1L.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"},
-            {n: "Combo 4 (4 X-Saladas + Refri 1L)", p: 48, d: "4 X-saladas artesanais 60g + Guaraná 1L.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"},
-            {n: "Combo 5 (2 X-Saladas + 3x Kikão + Refri 1L)", p: 55, d: "Combo família completo com Guaraná 1L.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"},
-            {n: "Combo 6 (3 Kikão Simples + Refri 1L)", p: 30, d: "Três kikões tradicionais + Guaraná 1L.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"},
-            {n: "Combo 7 (3 Hot Dog Venezuelano + Refri 1L)", p: 30, d: "Três dogs estilo venezuelano + Guaraná 1L.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"},
-            {n: "Combo X-Acebolado (+ Batata P)", p: 21, d: "X-salada acebolado + porção de batata frita P.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"},
-            {n: "Combo 9 (3 X-Saladas + Coca 1L)", p: 43, d: "3 X-saladas artesanais + Coca-Cola 1L.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"},
-            {n: "Combo Kid", p: 22, d: "Cheese Burguer 80g + batata P + suco.", img: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=400"},
-            {n: "Combo Casal", p: 62, d: "2 Clássicos de Carne + batata M + Coca 1L.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"},
-            {n: "Combo Solteiro+", p: 35, d: "1 Clássicos de Carne + batata P + Coca lata.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"},
-            {n: "Combo Especial Double", p: 44, d: "1 Double Burguer + batata P + Coca lata.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"},
-            {n: "Combo Dupla Irresistível", p: 56, d: "1 Clássicos de Carne + 1 Mister Já + Coca 1L.", img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7f81?w=400"}
+        { cat: "🎁 Promoções", items: [
+            {n: "Combo 1", p: 21.00, d: "X-Salada (carne artesanal 60g) + porção pequena de batata frita + refri guaraná lata 350ml."},
+            {n: "Combo 2", p: 35.00, d: "2 X-Saladas (carne artesanal 60g) + porção média de batata frita + refrigerante guaraná 1L."},
+            {n: "Combo 3", p: 37.00, d: "3 X-Saladas (carne artesanal 60g) + refrigerante guaraná 1L."},
+            {n: "Combo 4", p: 48.00, d: "4 X-Saladas (carne artesanal 60g) + refrigerante guaraná 1L."},
+            {n: "Combo 5", p: 55.00, d: "2 X-Saladas (carne artesanal) + 3 Kikão Simples + 1 refrigerante guaraná 1L."},
+            {n: "Combo 6", p: 30.00, d: "3 Kikão Simples + refrigerante guaraná 1L."},
+            {n: "Combo 7", p: 30.00, d: "3 Hot Dog Venezolanos + 1 refrigerante guaraná 1L."},
+            {n: "Combo X-Acebolado", p: 21.00, d: "1 X-Salada Acebolado + Porção pequena de batata frita."},
+            {n: "Combo 9", p: 43.00, d: "3 X-Saladas (carne artesanal) + 1 Coca Cola 1L."}
+        ]},
+        { cat: "⭐ Combos Especiais", items: [
+            {n: "Combo Kid", p: 22.00, d: "Chesse Burguer de 80g sem verduras, queijo cheddar e molho rosa + batata frita + suco."},
+            {n: "Combo Casal", p: 62.00, d: "2 Hamburguer Clássico de Carne + porção média de batata frita + 1 Coca Cola 1L."},
+            {n: "Combo Solteiro+", p: 35.00, d: "1 Hamburguer Clássico de Carne + porção pequena de batata frita + coca de lata 350ml."},
+            {n: "Combo Especial Double", p: 44.00, d: "1 Hamburguer Especial Double + porção pequena de batata frita + Coca de lata 350ml."},
+            {n: "Combo Dupla Irresistível", p: 56.00, d: "1 Hamburguer Clássica de Carne + 1 Hamburguer Mister Já + 1 Coca cola 1L."}
         ]},
         { cat: "🍔 X-Saladas", items: [
-            {n: "X-Burguer", p: 10, d: "Carne 70g, muçarela, alface e tomate.", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400"},
-            {n: "X-Maionese", p: 13, d: "Carne 70g, queijo, presunto e maionese especial.", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400"},
-            {n: "X-Salada", p: 15, d: "Carne 70g, ovo, presunto, muçarela e salada.", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400"},
-            {n: "X-Salada Cheddar", p: 17, d: "Carne 70g, cheddar, ovo, presunto e salada.", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400"},
-            {n: "X-Salada Acebolado", p: 17, d: "Carne 70g, muita cebola na chapa e queijo.", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400"},
-            {n: "X-Salada Bacon", p: 19, d: "Carne 70g, bacon crocante, ovo e salada.", img: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400"},
-            {n: "X-Salada Calabresa", p: 18, d: "Carne 70g, calabresa fatiada e queijo.", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400"},
-            {n: "X-Salada Duplo", p: 20, d: "Duas carnes, ovo, presunto e muçarela.", img: "https://images.unsplash.com/photo-1525164286253-04e68b9d94bb?w=400"},
-            {n: "X-Tudo", p: 22, d: "Carne, bacon, calabresa, salsicha, ovo e salada.", img: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400"},
-            {n: "X-Bacon/Milho", p: 22, d: "Carne, bacon, milho refogado e queijo.", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400"}
+            {n: "X-Burguer", p: 10.00, d: "Pão especial, carne artesanal 70g, queijo muçarela, alface e tomate."},
+            {n: "X-Maionese", p: 13.00, d: "Pão especial, carne artesanal 70g, queijo muçarela, presunto, alface e tomate."},
+            {n: "X-Salada", p: 15.00, d: "Pão especial, carne artesanal 70g, ovo frito, presunto, muçarela, alface e tomate."},
+            {n: "X-Salada Cheddar", p: 17.00, d: "Pão especial, carne artesanal 70g, duplo queijo cheddar fatiado, presunto, ovo frito, alface e tomate."},
+            {n: "X-Salada Acebolada", p: 17.00, d: "Pão especial, carne artesanal 70g, porção de cebola refogada, queijo muçarela, ovo frito, presunto, alface e tomate."},
+            {n: "X-Salada Bacon", p: 19.00, d: "Pão especial, carne artesanal 70g, fatias de bacon crocante, ovo frito, muçarela, presunto, alface e tomate."},
+            {n: "X-Salada Calabresa", p: 18.00, d: "Pão especial, carne artesanal 70g, calabresa fatiada, ovo frito, presunto, muçarela, alface e tomate."},
+            {n: "X-Salada Duplo", p: 20.00, d: "Pão especial, duas carnes artesanais 60g cada, ovo frito, presunto, muçarela, alface e tomate."},
+            {n: "X-Tudo", p: 22.00, d: "Pão especial, carne artesanal 70g, bacon, calabresa, salsicha, ovo frito, presunto, muçarela, alface, tomate, milho, ketchup e maionese."},
+            {n: "X-Bacon/Milho", p: 22.00, d: "Pão especial, carne artesanal 70g, bacon crocante, milho refogado com cebola, ovo frito, queijo muçarela, alface e tomate."}
         ]},
-        { cat: "🌭 Hot Dog & Kikão", items: [
-            {n: "Hot Dog Venezuelano", p: 10, d: "Salsicha, repolho, cenoura e batata palha.", img: "https://images.unsplash.com/photo-1627023911220-4112e75e9255?w=400"},
-            {n: "Kikão Simples", p: 10, d: "Pão, salsicha, molho caseiro e queijo ralado.", img: "https://images.unsplash.com/photo-1627023911220-4112e75e9255?w=400"},
-            {n: "Kikão Especial Muçarela", p: 15, d: "Kikão com cobertura de muçarela derretida.", img: "https://images.unsplash.com/photo-1627023911220-4112e75e9255?w=400"},
-            {n: "Kikão Especial Calabresa", p: 17, d: "Kikão com calabresa e queijo.", img: "https://images.unsplash.com/photo-1627023911220-4112e75e9255?w=400"},
-            {n: "Kikão Especial Bacon", p: 18, d: "Kikão com bacon crocante e queijo.", img: "https://images.unsplash.com/photo-1627023911220-4112e75e9255?w=400"}
+        { cat: "🌭 Hot Dogs & Kikões", items: [
+            {n: "Hot Dog Venezolano", p: 10.00, d: "Pão de hot dog, salsicha, cebola, cenoura, repolho, batata palha e queijo."},
+            {n: "Kikão Simples", p: 10.00, d: "Pão de hot dog, salsicha, molho caseiro, queijo ralado e batata palha."},
+            {n: "Kikão Especial Muçarela", p: 15.00, d: "Kikão com cobertura de queijo muçarela derretido."},
+            {n: "Kikão Especial Calabresa", p: 17.00, d: "Kikão com muçarela e calabresa fatiada."},
+            {n: "Kikão Especial Bacon", p: 18.00, d: "Kikão com muçarela e bacon crocante."}
         ]},
-        { cat: "🥩 Hambúguers Artesanais", items: [
-            {n: "Chesse Burguer 120g", p: 20, d: "Carne 120g, cheddar e picles.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400"},
-            {n: "Mister Já 120g", p: 23, d: "O carro chefe com molho verde especial.", img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400"},
-            {n: "Clássico de Carne 120g", p: 24, d: "Carne 120g, cheddar e cebola roxa.", img: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=400"},
-            {n: "Clássico Especial Double 240g", p: 33, d: "Dois blends de 120g grelhados.", img: "https://images.unsplash.com/photo-1534790566855-4cb788d389ec?w=400"},
-            {n: "Especial Da Casa 240g", p: 35, d: "240g de carne, queijo duplo e bacon.", img: "https://images.unsplash.com/photo-1596662951482-0c4ba74a6df6?w=400"},
-            {n: "Mister Já Turbo 120g", p: 30, d: "Artesanal completo com bacon e calabresa.", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400"},
-            {n: "Tropical Burguer 140g", p: 32, d: "Carne 140g, abacaxi e queijo coalho.", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400"}
+        { cat: "🥩 Carne Grelhada", items: [
+            {n: "Chesse Burguer 120g", p: 20.00, d: "Carne grelhada, cheddar, alface, tomate, picles e molho rosa."},
+            {n: "Mister Já 120g", p: 23.00, d: "Carne grelhada, muçarela, presunto, ovo, salada e molho verde."},
+            {n: "Clásica de Carne 120g", p: 24.00, d: "Carne grelhada, cheddar, bacon, salada e molho especial."},
+            {n: "Clásica Especial Double 240g", p: 33.00, d: "Duas carnes de 120g, cheddar, bacon, salada e molho especial."},
+            {n: "Especial Da Casa 240g", p: 35.00, d: "120g Frango + 120g carne bovina, bacon e molho mel e mostarda."},
+            {n: "Mister Já Turbo 120g", p: 30.00, d: "Artesanal completo com salsicha, calabresa e bacon."},
+            {n: "Tropical Burguer 140g", p: 32.00, d: "Carne grelhada, abacaxi grelhado, queijo coalho e bacon."}
+        ]},
+        { cat: "🍗 Peito de Frango", items: [
+            {n: "Frango Filé 120g", p: 20.00, d: "Filé de peito de frango grelhado, cheddar, ovo frito e salada."},
+            {n: "Frango Crocante Smash", p: 22.00, d: "Frango crocante, cheddar, bacon e molho verde."},
+            {n: "Frango Crocante Duplo", p: 28.00, d: "Dois frangos crocantes, cheddar, bacon e molho verde."}
+        ]},
+        { cat: "🍟 Batata Frita", items: [
+            {n: "Batata Frita Especial Cheddar", p: 26.00, d: "350g com queijo cheddar cremoso e bacon crocante."},
+            {n: "Batata Frita Turbo", p: 33.00, d: "400g, salsicha, calabresa, bacon, muçarela e molhos."},
+            {n: "Batata Frita Pequena 200g", p: 10.00, d: "Porção de 200g."},
+            {n: "Batata Frita Media 300g", p: 14.00, d: "Porção de 300g."},
+            {n: "Batata Frita Grande 400g", p: 20.00, d: "Porção de 400g."}
         ]},
         { cat: "🌯 Shawarmas", items: [
-            {n: "Shawarma 200g", p: 30, d: "Carne, frango, molho especial e fritas no pão sírio.", img: "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=400"},
-            {n: "Combo Individual Shawar", p: 35, d: "1 Shawarma + Coca lata.", img: "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=400"},
-            {n: "Combo Duplo Shawarma", p: 68, d: "2 Shawarmas + Coca 1L.", img: "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=400"}
+            {n: "Shawarma 200g", p: 30.00, d: "Carne e frango, molho tahine, alface, tomate, cebola e salsinha."},
+            {n: "Combo Duplo Shawarma", p: 68.00, d: "2 Shawarmas + Coca cola de 1L."},
+            {n: "Combo Individual Shawar", p: 35.00, d: "1 Shawarma + Coca lata 350ml."}
         ]},
         { cat: "🍢 Espetinhos", items: [
-            {n: "Espeto de carne", p: 13, d: "Acompanha farofa e vinagrete.", img: "https://images.unsplash.com/photo-1532636875304-0c89119d9b4d?w=400"},
-            {n: "Espeto de Frango", p: 12, d: "Acompanha farofa e vinagrete.", img: "https://images.unsplash.com/photo-1532636810811-309485292398?w=400"},
-            {n: "Espeto Carne e Bacon", p: 14, d: "Medalhão clássico.", img: "https://images.unsplash.com/photo-1621271110057-0402b85e0ca9?w=400"},
-            {n: "Espeto Especial", p: 23, d: "Espeto + macaxeira e abacate.", img: "https://images.unsplash.com/photo-1532636875304-0c89119d9b4d?w=400"},
-            {n: "Espeto Completo", p: 23, d: "Espeto + arroz, feijão e vatapá.", img: "https://images.unsplash.com/photo-1532636875304-0c89119d9b4d?w=400"}
+            {n: "Espeto de Carne", p: 13.00, d: "Vinagrete, farofa e mojito venezuelano."},
+            {n: "Espeto de Frango", p: 12.00, d: "Vinagrete, farofa e mojito venezuelano."},
+            {n: "Espeto Carne e Bacon", p: 14.00, d: "Vinagrete, farofa e mojito venezuelano."},
+            {n: "Espeto Misto", p: 12.00, d: "Vinagrete, farofa e mojito venezuelano."},
+            {n: "Espeto Especial", p: 23.00, d: "Macaxeira, abacate, farofa + 1 espeto mix."},
+            {n: "Espeto Completo", p: 23.00, d: "Arroz, vatapá, batatonese, farofa + 1 espeto."},
+            {n: "Combo de Espeto", p: 56.00, d: "Arroz grande, batatonese/vatapá, farofa + 3 espetos."}
         ]},
         { cat: "🥤 Bebidas", items: [
-            {n: "Agua 400ml", p: 3, d: "Com ou sem gás.", img: "https://images.unsplash.com/photo-1560023907-5f339617ea30?w=400"},
-            {n: "Refrigerante Lata", p: 6, d: "Diversos sabores.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400"},
-            {n: "Tuchaua/Magistral 1L", p: 6, d: "Sabor de Manaus.", img: "https://images.unsplash.com/photo-1527960669566-f882ba85a4c6?w=400"},
-            {n: "Refrigerante 1.5L", p: 12, d: "Coca-Cola ou Fanta.", img: "https://images.unsplash.com/photo-1527960669566-f882ba85a4c6?w=400"},
-            {n: "Refrigerante 2L", p: 14, d: "Coca-Cola ou Fanta.", img: "https://images.unsplash.com/photo-1527960669566-f882ba85a4c6?w=400"}
+            {n: "Agua (Com/Sem gás)", p: 3.00, d: "400ml."},
+            {n: "Refrigerante Lata 350ml", p: 6.00, d: "Coca, Pepsi ou Fanta."},
+            {n: "Refrigerante 600ml", p: 7.00, d: "Coca, Pepsi ou Fanta."},
+            {n: "Suco ou Tuchaua 1L", p: 6.00, d: "Magistral ou Tuchaua."},
+            {n: "Refrigerante 1.5L", p: 12.00, d: "Coca ou Fanta."},
+            {n: "Refrigerante 2L", p: 14.00, d: "Coca, Pepsi ou Fanta."}
         ]}
     ];
 
     let cart = [];
-    let currentItem = null;
-    let qty = 1;
 
-    function checkStatus() {
-        const agora = new Date();
-        const dia = agora.getDay();
-        const hora = agora.getHours();
-        const min = agora.getMinutes();
-        const tempo = hora * 100 + min;
-        const badge = document.getElementById('status-loja');
-        if ((dia >= 3 || dia === 0) && (tempo >= 1800 && tempo <= 2355)) {
-            badge.innerText = "ABERTO"; badge.className = "status-badge open";
-        } else {
-            badge.innerText = "FECHADO"; badge.className = "status-badge closed";
-        }
-    }
+    function init() {
+        const sections = document.getElementById('menu-sections');
+        const nav = document.getElementById('cat-nav');
+        menuData.forEach((section, idx) => {
+            const btn = document.createElement('div');
+            btn.className = `cat-item ${idx === 0 ? 'active' : ''}`;
+            btn.innerText = section.cat;
+            btn.onclick = () => {
+                document.querySelectorAll('.cat-item').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                window.scrollTo({ top: document.getElementById(`sec-${idx}`).offsetTop - 110, behavior: 'smooth' });
+            };
+            nav.appendChild(btn);
 
-    function filterMenu() {
-        const q = document.getElementById('search-input').value.toLowerCase().trim();
-        document.querySelectorAll('.menu-section').forEach(sec => {
-            let hasVisible = false;
-            sec.querySelectorAll('.product-card').forEach(card => {
-                const text = card.innerText.toLowerCase();
-                const isMatch = text.includes(q) || q.split('').every(char => text.includes(char));
-                card.style.display = isMatch ? 'flex' : 'none';
-                if(isMatch) hasVisible = true;
+            let sHtml = `<div class="menu-section" id="sec-${idx}"><h2 class="section-title">${section.cat}</h2>`;
+            section.items.forEach(item => {
+                sHtml += `<div class="product-card" onclick="openProduct('${item.n}', ${item.p}, '${item.d}')">
+                    <div class="product-info"><h3>${item.n}</h3><p>${item.d}</p><span class="product-price">R$ ${item.p.toFixed(2)}</span></div>
+                    <div class="product-img"><i class="fas fa-hamburger"></i></div>
+                </div>`;
             });
-            sec.style.display = hasVisible ? 'block' : 'none';
+            sections.innerHTML += sHtml + `</div>`;
         });
     }
 
-    function addToCart() {
-        const obs = document.getElementById('m-obs').value;
-        cart.push({...currentItem, qty, obs, id: Date.now()});
-        updateCartBar();
-        closeModals();
-        document.getElementById('m-obs').value = '';
+    function openProduct(n, p, d) {
+        currentItem = {n, p, d}; qty = 1;
+        document.getElementById('m-title').innerText = n;
+        document.getElementById('m-desc').innerText = d;
+        document.getElementById('m-price').innerText = `R$ ${p.toFixed(2)}`;
+        document.getElementById('m-qty').innerText = qty;
+        document.getElementById('product-modal').style.display = 'flex';
     }
 
-    function quickAdd(name, price) {
-        cart.push({n: name, p: price, qty: 1, obs: 'Adição rápida', id: Date.now()});
+    function changeQty(v) { qty = Math.max(1, qty + v); document.getElementById('m-qty').innerText = qty; }
+
+    function addToCart() {
+        cart.push({...currentItem, qty, obs: document.getElementById('m-obs').value, id: Date.now()});
+        document.getElementById('m-obs').value = '';
         updateCartBar();
-        openCheckout();
+        closeModals();
     }
 
     function updateCartBar() {
@@ -300,109 +295,57 @@
         let total = 0;
         cart.forEach(item => {
             total += (item.p * item.qty);
-            container.innerHTML += `
-                <div class="checkout-item">
-                    <div style="flex:1;">
-                        <strong style="font-size:14px;">${item.qty}x ${item.n}</strong><br>
-                        <small style="color:#777;">${item.obs ? 'Obs: ' + item.obs : ''}</small><br>
-                        <button class="btn-remove" onclick="removeFromCart(${item.id})">Remover item</button>
-                    </div>
-                    <div style="text-align:right; font-weight:700;">
-                        R$ ${(item.p * item.qty).toFixed(2)}
-                    </div>
-                </div>`;
+            container.innerHTML += `<div class="checkout-item">
+                <div><strong>${item.qty}x ${item.n}</strong></div>
+                <div>R$ ${(item.p * item.qty).toFixed(2)} <i class="fas fa-trash" onclick="removeItem(${item.id})" style="color:red; margin-left:10px;"></i></div>
+            </div>`;
         });
         document.getElementById('checkout-total').innerText = `R$ ${total.toFixed(2)}`;
         document.getElementById('checkout-modal').style.display = 'flex';
     }
 
-    function removeFromCart(id) {
+    function removeItem(id) {
         cart = cart.filter(i => i.id !== id);
         updateCartBar();
         if(cart.length === 0) closeModals(); else openCheckout();
     }
 
     function toggleAddress() {
-        const type = document.getElementById('delivery-type').value;
-        document.getElementById('address-fields').style.display = type === 'entrega' ? 'block' : 'none';
+        document.getElementById('address-fields').style.display = document.getElementById('delivery-type').value === 'entrega' ? 'block' : 'none';
     }
 
     function sendWhatsApp() {
         const name = document.getElementById('cust-name').value;
         const addr = document.getElementById('cust-address').value;
         const type = document.getElementById('delivery-type').value;
-        const pay = document.getElementById('payment-method').value;
+        if(!name || (type === 'entrega' && !addr)) return alert("Preencha nome e endereço!");
 
-        if(!name || (type === 'entrega' && !addr)) {
-            alert("Por favor, preencha seu nome e endereço de entrega!"); return;
-        }
-
-        let msg = `*🍔 NOVO PEDIDO - BURGUER JÁ*%0A%0A`;
-        msg += `*Cliente:* ${name}%0A`;
-        msg += `*Pedido:* ${type.toUpperCase()}%0A`;
+        let msg = `*🍔 BURGUER JÁ - NOVO PEDIDO*%0A%0A*Cliente:* ${name}%0A*Tipo:* ${type}%0A`;
         if(type === 'entrega') msg += `*Endereço:* ${addr}%0A`;
-        msg += `*Pagamento:* ${pay}%0A%0A`;
-        msg += `*--- ITENS ---*%0A`;
-        
-        let total = 0;
-        cart.forEach(i => {
-            msg += `• ${i.qty}x ${i.n} (R$ ${(i.p * i.qty).toFixed(2)})%0A`;
-            if(i.obs) msg += `  _Obs: ${i.obs}_%0A`;
-            total += (i.p * i.qty);
-        });
-
-        msg += `%0A*TOTAL DO PEDIDO: R$ ${total.toFixed(2)}*%0A%0A`;
-        if(type === 'entrega') msg += `_Taxa de entrega: A combinar (Grátis no P10)_`;
-
+        msg += `%0A*ITENS:*%0A`;
+        cart.forEach(i => msg += `• ${i.qty}x ${i.n}%0A`);
         window.open(`https://wa.me/5592982876189?text=${msg}`);
     }
 
-    function init() {
-        checkStatus();
-        const sections = document.getElementById('menu-sections');
-        const nav = document.getElementById('cat-nav');
-        menuData.forEach((section, idx) => {
-            const btn = document.createElement('div');
-            btn.className = `cat-item ${idx === 0 ? 'active' : ''}`;
-            btn.innerText = section.cat.split(' ')[1] || section.cat;
-            btn.onclick = () => {
-                document.querySelectorAll('.cat-item').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                window.scrollTo({ top: document.getElementById(`sec-${idx}`).offsetTop - 120, behavior: 'smooth' });
-            };
-            nav.appendChild(btn);
-            let sHtml = `<div class="menu-section" id="sec-${idx}"><h2 class="section-title">${section.cat}</h2>`;
-            section.items.forEach(item => {
-                sHtml += `<div class="product-card" onclick="openProduct('${item.n}', ${item.p}, '${item.d}', '${item.img}')">
-                    <div class="product-info"><h3>${item.n}</h3><p>${item.d}</p><span class="product-price">R$ ${item.p.toFixed(2)}</span></div>
-                    <img src="${item.img}" class="product-img"></div>`;
-            });
-            sections.innerHTML += sHtml + `</div>`;
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    window.onscroll = function() {
+        const btn = document.getElementById('back-to-top');
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+            btn.classList.add('show');
+        } else {
+            btn.classList.remove('show');
+        }
+    };
+
+    function filterMenu() {
+        const q = document.getElementById('search-input').value.toLowerCase();
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.style.display = card.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
         });
     }
 
-    function openProduct(n, p, d, img) {
-        currentItem = {n, p, d, img}; qty = 1;
-        document.getElementById('m-title').innerText = n;
-        document.getElementById('m-desc').innerText = d;
-        document.getElementById('m-img').src = img;
-        document.getElementById('m-price').innerText = `R$ ${p.toFixed(2)}`;
-        document.getElementById('m-qty').innerText = qty;
-        document.getElementById('product-modal').style.display = 'flex';
-    }
-
-    function changeQty(v) { qty = Math.max(1, qty + v); document.getElementById('m-qty').innerText = qty; }
     function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
-    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-    window.addEventListener('scroll', () => {
-        const btn = document.getElementById('back-to-top');
-        window.scrollY > 300 ? btn.classList.add('show') : btn.classList.remove('show');
-    });
-
-    function switchPage(page) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-    }
 
     init();
 </script>
