@@ -7,67 +7,69 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #e63946; --dark: #1b1b1b; --bg: #fdfdfd; --gray: #f1f1f1; --whatsapp: #25d366; --gold: #ffb703; }
+        :root { --primary: #e63946; --dark: #1b1b1b; --bg: #fdfdfd; --gray: #f1f1f1; --whatsapp: #25d366; --gold: #ffb703; --open: #2ecc71; --closed: #95a5a6; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { font-family: 'Lexend', sans-serif; margin: 0; background: var(--bg); color: #333; padding-bottom: 120px; }
         
-        /* Header Simplificado */
-        header { background: var(--dark); color: white; padding: 40px 20px; text-align: left; }
+        header { background: var(--dark); color: white; padding: 40px 20px; text-align: left; position: relative; }
         header h1 { margin: 0; font-size: 26px; color: var(--primary); }
         .info-header { font-size: 11px; color: #bbb; margin-top: 10px; line-height: 1.5; }
 
-        /* Navegação de Páginas (Tabs) */
+        .status-badge { position: absolute; top: 20px; right: 20px; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; color: white; }
+        .open { background: var(--open); }
+        .closed { background: var(--closed); }
+
         .tabs-nav { display: flex; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 102; }
         .tab-btn { flex: 1; padding: 15px; text-align: center; font-weight: 600; cursor: pointer; color: #888; border-bottom: 2px solid transparent; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #fff5f5; }
 
-        /* Barra de Pesquisa e Categorias */
         .search-container { padding: 15px; background: #fff; }
         .search-box { display: flex; align-items: center; background: var(--gray); padding: 10px 15px; border-radius: 12px; }
         .search-box input { background: none; border: none; width: 100%; font-family: inherit; margin-left: 10px; }
 
         .category-nav { display: flex; overflow-x: auto; background: #fff; padding: 10px 15px; gap: 10px; border-bottom: 1px solid #eee; scrollbar-width: none; position: sticky; top: 52px; z-index: 101; }
-        .cat-item { background: var(--gray); padding: 8px 18px; border-radius: 20px; white-space: nowrap; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        .cat-item { background: var(--gray); padding: 8px 18px; border-radius: 20px; white-space: nowrap; font-size: 13px; font-weight: 600; }
         .cat-item.active { background: var(--primary); color: white; }
 
         .container { max-width: 500px; margin: auto; padding: 15px; }
-        .page-content { display: none; }
-        .page-content.active { display: block; }
-
-        /* Produtos */
         .section-title { font-size: 18px; margin: 25px 0 15px; font-weight: 700; border-left: 4px solid var(--primary); padding-left: 10px; }
-        .product-card { display: flex; background: white; padding: 12px; margin-bottom: 12px; border-radius: 15px; border: 1px solid #f0f0f0; gap: 12px; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        
+        .product-card { display: flex; background: white; padding: 12px; margin-bottom: 12px; border-radius: 15px; border: 1px solid #f0f0f0; gap: 12px; align-items: center; cursor: pointer; }
         .product-info { flex: 1; }
         .product-info h3 { margin: 0; font-size: 14px; }
-        .product-info p { font-size: 11px; color: #777; margin: 5px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .product-price { color: #2d6a4f; font-weight: 700; font-size: 14px; }
+        .product-info p { font-size: 11px; color: #777; margin: 5px 0; }
+        .product-price { color: #2d6a4f; font-weight: 700; }
         .product-img { width: 80px; height: 80px; border-radius: 12px; object-fit: cover; }
 
-        /* Avaliações */
-        .review-card { background: white; padding: 15px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 15px; }
-        .rating-stars { color: var(--gold); margin-bottom: 5px; }
-        .rating-input-area { background: #fff; padding: 20px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 30px; }
+        #back-to-top { position: fixed; bottom: 100px; right: 20px; background: var(--dark); color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 99; border: 2px solid var(--primary); cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        #back-to-top.show { opacity: 1; visibility: visible; }
 
-        /* Footer */
+        .cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--primary); color: white; padding: 18px; border-radius: 50px; display: flex; justify-content: space-between; z-index: 1000; font-weight: 700; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.2); cursor: pointer; }
+
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; z-index:2000; align-items:flex-end; }
+        .modal-content { background:white; width:100%; border-radius:25px 25px 0 0; padding:25px; max-height:95vh; overflow-y:auto; }
+        
+        .checkout-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .upsell-box { background: #fff9e6; padding: 15px; border-radius: 12px; margin: 15px 0; border: 1px dashed var(--gold); }
+        .option-group { margin: 15px 0; }
+        .option-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+        select, input[type="text"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-family: inherit; margin-bottom: 10px; font-size: 14px; }
+        .btn-confirm { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; }
+        .btn-remove { color: var(--primary); border: none; background: none; font-size: 12px; cursor: pointer; padding: 5px 0; }
+
         footer { background: #111; color: #fff; padding: 40px 20px; text-align: center; font-size: 13px; }
         .dev-by { margin-top: 15px; color: #666; }
         .dev-by a { color: var(--primary); text-decoration: none; font-weight: 700; }
-
-        /* Carrinho e Modais */
-        .cart-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--primary); color: white; padding: 18px; border-radius: 50px; display: flex; justify-content: space-between; z-index: 1000; font-weight: 700; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; z-index:2000; align-items:flex-end; }
-        .modal-content { background:white; width:100%; border-radius:25px 25px 0 0; padding:25px; max-height:90vh; overflow-y:auto; }
-        .back-to-top { position: fixed; bottom: 90px; right: 20px; background: var(--dark); color: white; width: 40px; height: 40px; border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 999; }
-        .btn-confirm { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <header>
+    <div id="status-loja" class="status-badge">Verificando...</div>
     <h1>Burguer Já 🍔</h1>
     <div class="info-header">
         📍 R. Lindon Johnson, 29 - Parque Dez<br>
-        🕒 Qua a Domingo 18:00 às 23:55 | (92) 98287-6189
+        🕒 Qua a Dom 18:00 às 23:55 | (92) 98287-6189
     </div>
 </header>
 
@@ -80,64 +82,11 @@
     <div class="search-container">
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" id="search-input" placeholder="Buscar no cardápio..." onkeyup="filterMenu()">
+            <input type="text" id="search-input" placeholder="O que você quer comer hoje?" onkeyup="filterMenu()">
         </div>
     </div>
     <nav class="category-nav" id="cat-nav"></nav>
     <div class="container" id="menu-sections"></div>
-</div>
-
-<div id="page-reviews" class="page-content">
-    <div class="container">
-        <h2 class="section-title">O que dizem de nós</h2>
-        
-        <div class="rating-input-area">
-            <p style="margin-top:0; font-weight:600;">Deixe sua nota:</p>
-            <div style="font-size:24px; color:#ccc; cursor:pointer; margin-bottom:15px;" id="star-selector">
-                <i class="fas fa-star" onclick="setRating(1)"></i>
-                <i class="fas fa-star" onclick="setRating(2)"></i>
-                <i class="fas fa-star" onclick="setRating(3)"></i>
-                <i class="fas fa-star" onclick="setRating(4)"></i>
-                <i class="fas fa-star" onclick="setRating(5)"></i>
-            </div>
-            <textarea id="rev-text" placeholder="Conte sua experiência..." style="width:100%; border:1px solid #ddd; padding:10px; border-radius:10px; font-family:inherit;"></textarea>
-            <button class="btn-confirm" style="margin-top:10px;" onclick="alert('Obrigado! Sua avaliação será moderada.')">Enviar Comentário</button>
-        </div>
-
-        <div id="reviews-list">
-            <div class="review-card">
-                <div class="rating-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <strong>Ana Clara</strong>
-                <p style="font-size:12px; color:#666;">Melhor artesanal do Parque Dez! O molho verde é incrível.</p>
-            </div>
-            <div class="review-card">
-                <div class="rating-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <strong>Marcos Silva</strong>
-                <p style="font-size:12px; color:#666;">Entrega super rápida e o hambúrguer chegou quentinho.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-    <i class="fas fa-arrow-up"></i>
-</div>
-
-<footer>
-    <div style="margin-bottom:15px;">
-        <a href="https://www.instagram.com/burguerja_/" target="_blank" style="color:white; font-size:20px; margin:0 10px;"><i class="fab fa-instagram"></i></a>
-        <a href="https://wa.me/5592982876189" target="_blank" style="color:white; font-size:20px; margin:0 10px;"><i class="fab fa-whatsapp"></i></a>
-    </div>
-    <strong>Burguer Já &copy; 2024</strong><br>
-    Manaus - AM
-    <div class="dev-by">
-        Desenvolvido por: <a href="https://www.instagram.com/nosdoisagencia/" target="_blank">Nós Dois Agência</a>
-    </div>
-</footer>
-
-<div class="cart-bar" id="cart-bar" onclick="openCheckout()">
-    <span>🛒 Ver Sacola</span>
-    <span id="cart-total">R$ 0,00</span>
 </div>
 
 <div class="modal-overlay" id="product-modal">
@@ -153,44 +102,78 @@
                 <button onclick="changeQty(1)" style="border:none; background:none; font-size:18px; color:var(--primary);">+</button>
             </div>
         </div>
-        <textarea id="m-obs" placeholder="Alguma observação?" style="width:100%; height:60px; border-radius:10px; border:1px solid #ddd; padding:10px; margin-bottom:15px;"></textarea>
-        <button class="btn-confirm" onclick="addToCart()">Adicionar ao Pedido</button>
-        <button onclick="closeModals()" style="width:100%; background:none; border:none; color:#999; margin-top:10px;">Voltar</button>
+        <textarea id="m-obs" placeholder="Alguma observação? (Ex: Sem cebola)" style="width:100%; height:60px; border-radius:10px; border:1px solid #ddd; padding:10px; margin-bottom:15px; font-family:inherit;"></textarea>
+        <button id="btn-add-cart" class="btn-confirm" onclick="addToCart()">Adicionar ao Pedido</button>
+        <button onclick="closeModals()" style="width:100%; background:none; border:none; color:#999; margin-top:15px;">Voltar ao cardápio</button>
     </div>
 </div>
 
 <div class="modal-overlay" id="checkout-modal">
     <div class="modal-content">
-        <h2 style="margin-top:0;">Finalizar Pedido</h2>
-        <div id="checkout-list" style="margin-bottom:15px; border-bottom:1px solid #eee;"></div>
+        <h2 style="margin-top:0;">Revisar Pedido</h2>
+        <div id="checkout-items"></div>
         
-        <div style="margin-bottom:15px;">
-            <label style="display:block; font-size:12px; font-weight:700; margin-bottom:5px;">Como prefere?</label>
-            <select id="method" onchange="toggleAddr()" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
-                <option value="Entrega">Entrega</option>
-                <option value="Retirada">Retirada no Local</option>
+        <div class="upsell-box">
+            <div style="font-weight:700; font-size:14px; margin-bottom:10px;">🍟 Que tal turbinar seu pedido?</div>
+            <button onclick="quickAdd('Batata P', 8.00)" style="font-size:12px; padding:8px; border-radius:20px; border:1px solid var(--gold); background:white;">+ Batata P (+R$ 8)</button>
+            <button onclick="quickAdd('Coca Lata', 6.00)" style="font-size:12px; padding:8px; border-radius:20px; border:1px solid var(--gold); background:white; margin-left:5px;">+ Coca Lata (+R$ 6)</button>
+        </div>
+
+        <div class="option-group">
+            <label>Entrega ou Retirada?</label>
+            <select id="delivery-type" onchange="toggleAddress()">
+                <option value="entrega">Entrega (Taxa a combinar)</option>
+                <option value="retirada">Retirada na Loja</option>
             </select>
         </div>
 
-        <div id="addr-box" style="margin-bottom:15px;">
-            <label style="display:block; font-size:12px; font-weight:700; margin-bottom:5px;">Endereço</label>
-            <input type="text" id="address" placeholder="Rua, número e bairro" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
+        <div id="address-fields">
+            <input type="text" id="cust-name" placeholder="Seu Nome">
+            <input type="text" id="cust-address" placeholder="Endereço Completo (Rua, Número, Bairro)">
+            <p style="font-size: 11px; color: var(--open); margin: -5px 0 10px 5px;">*Entregas no Parque 10 são grátis!</p>
         </div>
 
-        <div style="margin-bottom:15px;">
-            <label style="display:block; font-size:12px; font-weight:700; margin-bottom:5px;">Pagamento</label>
-            <select id="payment" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
+        <div class="option-group">
+            <label>Forma de Pagamento</label>
+            <select id="payment-method">
                 <option value="Pix">Pix</option>
-                <option value="Cartão">Cartão</option>
+                <option value="Cartão">Cartão (Débito/Crédito)</option>
                 <option value="Dinheiro">Dinheiro</option>
             </select>
         </div>
 
-        <div id="checkout-final-total" style="text-align:right; font-weight:700; font-size:18px; margin-bottom:15px;"></div>
-        <button class="btn-confirm" style="background:var(--whatsapp)" onclick="sendWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar Pedido</button>
-        <button onclick="closeModals()" style="width:100%; background:none; border:none; color:#999; margin-top:10px;">Continuar Comprando</button>
+        <div style="display:flex; justify-content:space-between; font-weight:700; font-size:18px; margin:20px 0;">
+            <span>Total:</span>
+            <span id="checkout-total">R$ 0,00</span>
+        </div>
+
+        <button class="btn-confirm" onclick="sendWhatsApp()" style="background: var(--whatsapp); height: 60px;">
+            <i class="fab fa-whatsapp"></i> Finalizar Pedido
+        </button>
+        <button onclick="closeModals()" style="width:100%; background:none; border:none; color:#999; margin-top:15px;">Adicionar mais itens</button>
     </div>
 </div>
+
+<div id="back-to-top" onclick="scrollToTop()">
+    <i class="fas fa-chevron-up"></i>
+</div>
+
+<div class="cart-bar" id="cart-bar" onclick="openCheckout()">
+    <span>🛒 Ver Pedido</span>
+    <span id="cart-total-bar">R$ 0,00</span>
+</div>
+
+<footer>
+    <div style="margin-bottom:15px;">
+        <a href="https://www.instagram.com/burguerja_/" target="_blank" style="color:white; font-size:20px; margin:0 10px;"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/5592982876189" target="_blank" style="color:white; font-size:20px; margin:0 10px;"><i class="fab fa-whatsapp"></i></a>
+    </div>
+    <strong>Burguer Já &copy; 2024</strong><br>
+    Manaus - AM
+    <div class="dev-by">
+        Desenvolvido por: <a href="https://www.instagram.com/nosdoisagencia/" target="_blank">Nós Dois Agência</a>
+    </div>
+</footer>
 
 <script>
     const menuData = [
@@ -229,7 +212,7 @@
             {n: "Kikão Especial Calabresa", p: 17, d: "Kikão com calabresa e queijo.", img: "https://images.unsplash.com/photo-1627023911220-4112e75e9255?w=400"},
             {n: "Kikão Especial Bacon", p: 18, d: "Kikão com bacon crocante e queijo.", img: "https://images.unsplash.com/photo-1627023911220-4112e75e9255?w=400"}
         ]},
-        { cat: "🥩 Carne Grelhada", items: [
+        { cat: "🥩 Hambúguers Artesanais", items: [
             {n: "Chesse Burguer 120g", p: 20, d: "Carne 120g, cheddar e picles.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400"},
             {n: "Mister Já 120g", p: 23, d: "O carro chefe com molho verde especial.", img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400"},
             {n: "Clássico de Carne 120g", p: 24, d: "Carne 120g, cheddar e cebola roxa.", img: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=400"},
@@ -247,9 +230,8 @@
             {n: "Espeto de carne", p: 13, d: "Acompanha farofa e vinagrete.", img: "https://images.unsplash.com/photo-1532636875304-0c89119d9b4d?w=400"},
             {n: "Espeto de Frango", p: 12, d: "Acompanha farofa e vinagrete.", img: "https://images.unsplash.com/photo-1532636810811-309485292398?w=400"},
             {n: "Espeto Carne e Bacon", p: 14, d: "Medalhão clássico.", img: "https://images.unsplash.com/photo-1621271110057-0402b85e0ca9?w=400"},
-            {n: "Espeto Especial", p: 23, d: "Espeto + macaxeira e abacate.", img: "https://i.imgur.com/K3M90y3.png"},
-            {n: "Espeto Completo", p: 23, d: "Espeto à escolha + arroz, feijão e vatapá.", img: "https://i.imgur.com/K3M90y3.png"},
-            {n: "Combo de Espeto", p: 56, d: "3 espetos + porção grande de guarnições.", img: "https://i.imgur.com/K3M90y3.png"}
+            {n: "Espeto Especial", p: 23, d: "Espeto + macaxeira e abacate.", img: "https://images.unsplash.com/photo-1532636875304-0c89119d9b4d?w=400"},
+            {n: "Espeto Completo", p: 23, d: "Espeto + arroz, feijão e vatapá.", img: "https://images.unsplash.com/photo-1532636875304-0c89119d9b4d?w=400"}
         ]},
         { cat: "🥤 Bebidas", items: [
             {n: "Agua 400ml", p: 3, d: "Com ou sem gás.", img: "https://images.unsplash.com/photo-1560023907-5f339617ea30?w=400"},
@@ -264,48 +246,143 @@
     let currentItem = null;
     let qty = 1;
 
-    function init() {
-        const nav = document.getElementById('cat-nav');
-        const sections = document.getElementById('menu-sections');
+    function checkStatus() {
+        const agora = new Date();
+        const dia = agora.getDay();
+        const hora = agora.getHours();
+        const min = agora.getMinutes();
+        const tempo = hora * 100 + min;
+        const badge = document.getElementById('status-loja');
+        if ((dia >= 3 || dia === 0) && (tempo >= 1800 && tempo <= 2355)) {
+            badge.innerText = "ABERTO"; badge.className = "status-badge open";
+        } else {
+            badge.innerText = "FECHADO"; badge.className = "status-badge closed";
+        }
+    }
+
+    function filterMenu() {
+        const q = document.getElementById('search-input').value.toLowerCase().trim();
+        document.querySelectorAll('.menu-section').forEach(sec => {
+            let hasVisible = false;
+            sec.querySelectorAll('.product-card').forEach(card => {
+                const text = card.innerText.toLowerCase();
+                const isMatch = text.includes(q) || q.split('').every(char => text.includes(char));
+                card.style.display = isMatch ? 'flex' : 'none';
+                if(isMatch) hasVisible = true;
+            });
+            sec.style.display = hasVisible ? 'block' : 'none';
+        });
+    }
+
+    function addToCart() {
+        const obs = document.getElementById('m-obs').value;
+        cart.push({...currentItem, qty, obs, id: Date.now()});
+        updateCartBar();
+        closeModals();
+        document.getElementById('m-obs').value = '';
+    }
+
+    function quickAdd(name, price) {
+        cart.push({n: name, p: price, qty: 1, obs: 'Adição rápida', id: Date.now()});
+        updateCartBar();
+        openCheckout();
+    }
+
+    function updateCartBar() {
+        const total = cart.reduce((acc, i) => acc + (i.p * i.qty), 0);
+        document.getElementById('cart-total-bar').innerText = `R$ ${total.toFixed(2)}`;
+        document.getElementById('cart-bar').style.display = cart.length > 0 ? 'flex' : 'none';
+    }
+
+    function openCheckout() {
+        const container = document.getElementById('checkout-items');
+        container.innerHTML = '';
+        let total = 0;
+        cart.forEach(item => {
+            total += (item.p * item.qty);
+            container.innerHTML += `
+                <div class="checkout-item">
+                    <div style="flex:1;">
+                        <strong style="font-size:14px;">${item.qty}x ${item.n}</strong><br>
+                        <small style="color:#777;">${item.obs ? 'Obs: ' + item.obs : ''}</small><br>
+                        <button class="btn-remove" onclick="removeFromCart(${item.id})">Remover item</button>
+                    </div>
+                    <div style="text-align:right; font-weight:700;">
+                        R$ ${(item.p * item.qty).toFixed(2)}
+                    </div>
+                </div>`;
+        });
+        document.getElementById('checkout-total').innerText = `R$ ${total.toFixed(2)}`;
+        document.getElementById('checkout-modal').style.display = 'flex';
+    }
+
+    function removeFromCart(id) {
+        cart = cart.filter(i => i.id !== id);
+        updateCartBar();
+        if(cart.length === 0) closeModals(); else openCheckout();
+    }
+
+    function toggleAddress() {
+        const type = document.getElementById('delivery-type').value;
+        document.getElementById('address-fields').style.display = type === 'entrega' ? 'block' : 'none';
+    }
+
+    function sendWhatsApp() {
+        const name = document.getElementById('cust-name').value;
+        const addr = document.getElementById('cust-address').value;
+        const type = document.getElementById('delivery-type').value;
+        const pay = document.getElementById('payment-method').value;
+
+        if(!name || (type === 'entrega' && !addr)) {
+            alert("Por favor, preencha seu nome e endereço de entrega!"); return;
+        }
+
+        let msg = `*🍔 NOVO PEDIDO - BURGUER JÁ*%0A%0A`;
+        msg += `*Cliente:* ${name}%0A`;
+        msg += `*Pedido:* ${type.toUpperCase()}%0A`;
+        if(type === 'entrega') msg += `*Endereço:* ${addr}%0A`;
+        msg += `*Pagamento:* ${pay}%0A%0A`;
+        msg += `*--- ITENS ---*%0A`;
         
+        let total = 0;
+        cart.forEach(i => {
+            msg += `• ${i.qty}x ${i.n} (R$ ${(i.p * i.qty).toFixed(2)})%0A`;
+            if(i.obs) msg += `  _Obs: ${i.obs}_%0A`;
+            total += (i.p * i.qty);
+        });
+
+        msg += `%0A*TOTAL DO PEDIDO: R$ ${total.toFixed(2)}*%0A%0A`;
+        if(type === 'entrega') msg += `_Taxa de entrega: A combinar (Grátis no P10)_`;
+
+        window.open(`https://wa.me/5592982876189?text=${msg}`);
+    }
+
+    function init() {
+        checkStatus();
+        const sections = document.getElementById('menu-sections');
+        const nav = document.getElementById('cat-nav');
         menuData.forEach((section, idx) => {
             const btn = document.createElement('div');
             btn.className = `cat-item ${idx === 0 ? 'active' : ''}`;
-            btn.innerHTML = `${section.cat} <i class="fas fa-chevron-right" style="font-size:8px; opacity:0.4"></i>`;
+            btn.innerText = section.cat.split(' ')[1] || section.cat;
             btn.onclick = () => {
                 document.querySelectorAll('.cat-item').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 window.scrollTo({ top: document.getElementById(`sec-${idx}`).offsetTop - 120, behavior: 'smooth' });
             };
             nav.appendChild(btn);
-
             let sHtml = `<div class="menu-section" id="sec-${idx}"><h2 class="section-title">${section.cat}</h2>`;
             section.items.forEach(item => {
-                sHtml += `
-                    <div class="product-card" onclick="openProduct('${item.n}', ${item.p}, '${item.d}', '${item.img}')">
-                        <div class="product-info">
-                            <h3>${item.n}</h3>
-                            <p>${item.d}</p>
-                            <span class="product-price">R$ ${item.p.toFixed(2)}</span>
-                        </div>
-                        <img src="${item.img}" class="product-img">
-                    </div>`;
+                sHtml += `<div class="product-card" onclick="openProduct('${item.n}', ${item.p}, '${item.d}', '${item.img}')">
+                    <div class="product-info"><h3>${item.n}</h3><p>${item.d}</p><span class="product-price">R$ ${item.p.toFixed(2)}</span></div>
+                    <img src="${item.img}" class="product-img"></div>`;
             });
             sections.innerHTML += sHtml + `</div>`;
         });
     }
 
-    function switchPage(page) {
-        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(`page-${page}`).classList.add('active');
-        event.currentTarget.classList.add('active');
-        window.scrollTo(0,0);
-    }
-
     function openProduct(n, p, d, img) {
-        currentItem = {n, p, d, img};
-        qty = 1;
+        currentItem = {n, p, d, img}; qty = 1;
         document.getElementById('m-title').innerText = n;
         document.getElementById('m-desc').innerText = d;
         document.getElementById('m-img').src = img;
@@ -314,83 +391,18 @@
         document.getElementById('product-modal').style.display = 'flex';
     }
 
-    function changeQty(v) {
-        qty = Math.max(1, qty + v);
-        document.getElementById('m-qty').innerText = qty;
-    }
-
-    function addToCart() {
-        const obs = document.getElementById('m-obs').value;
-        cart.push({...currentItem, qty, obs});
-        updateCartBar();
-        closeModals();
-        document.getElementById('m-obs').value = '';
-    }
-
-    function updateCartBar() {
-        const total = cart.reduce((acc, i) => acc + (i.p * i.qty), 0);
-        document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2)}`;
-        document.getElementById('cart-bar').style.display = cart.length > 0 ? 'flex' : 'none';
-    }
-
-    function openCheckout() {
-        const list = document.getElementById('checkout-list');
-        list.innerHTML = '';
-        let total = 0;
-        cart.forEach((item, index) => {
-            total += (item.p * item.qty);
-            list.innerHTML += `<div style="display:flex; justify-content:space-between; padding:10px 0;">
-                <div><strong>${item.qty}x ${item.n}</strong></div>
-                <div>R$ ${(item.p * item.qty).toFixed(2)} <i class="fas fa-trash" style="color:red; margin-left:10px;" onclick="removeItem(${index})"></i></div>
-            </div>`;
-        });
-        document.getElementById('checkout-final-total').innerText = `Total: R$ ${total.toFixed(2)}`;
-        document.getElementById('checkout-modal').style.display = 'flex';
-    }
-
-    function removeItem(index) {
-        cart.splice(index, 1);
-        updateCartBar();
-        if(cart.length === 0) closeModals(); else openCheckout();
-    }
-
-    function toggleAddr() {
-        document.getElementById('addr-box').style.display = document.getElementById('method').value === 'Entrega' ? 'block' : 'none';
-    }
-
-    function sendWhatsApp() {
-        const method = document.getElementById('method').value;
-        const addr = document.getElementById('address').value;
-        const pay = document.getElementById('payment').value;
-        if(method === 'Entrega' && !addr) return alert("Informe o endereço!");
-        
-        let msg = `*🍔 PEDIDO BURGUER JÁ*\n\n`;
-        cart.forEach(i => msg += `*${i.qty}x ${i.n}* - R$ ${(i.p * i.qty).toFixed(2)}\n${i.obs ? '_Obs: ' + i.obs + '_\n' : ''}\n`);
-        msg += `*Total: ${document.getElementById('cart-total').innerText}*\n\n`;
-        msg += `*Forma:* ${method}\n*Pagamento:* ${pay}\n`;
-        if(addr) msg += `*Endereço:* ${addr}`;
-        window.open(`https://wa.me/5592982876189?text=${encodeURIComponent(msg)}`);
-    }
-
-    function setRating(n) {
-        const stars = document.querySelectorAll('#star-selector i');
-        stars.forEach((s, i) => s.style.color = i < n ? 'var(--gold)' : '#ccc');
-    }
-
+    function changeQty(v) { qty = Math.max(1, qty + v); document.getElementById('m-qty').innerText = qty; }
     function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('back-to-top');
+        window.scrollY > 300 ? btn.classList.add('show') : btn.classList.remove('show');
+    });
 
-    function filterMenu() {
-        const q = document.getElementById('search-input').value.toLowerCase();
-        document.querySelectorAll('.menu-section').forEach(sec => {
-            let has = false;
-            sec.querySelectorAll('.product-card').forEach(c => {
-                if(c.innerText.toLowerCase().includes(q)) { c.style.display='flex'; has=true; } else c.style.display='none';
-            });
-            sec.style.display = has ? 'block' : 'none';
-        });
+    function switchPage(page) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        event.currentTarget.classList.add('active');
     }
-
-    window.onscroll = () => document.getElementById("backToTop").style.display = window.scrollY > 300 ? "flex" : "none";
 
     init();
 </script>
