@@ -41,7 +41,6 @@
         .product-price { color: #2d6a4f; font-weight: 700; }
         .product-img { width: 85px; height: 85px; border-radius: 12px; object-fit: cover; background: #eee; display: flex; align-items: center; justify-content: center; color: #ccc;}
 
-        /* BOTÃO VOLTAR AO TOPO */
         #back-to-top { position: fixed; bottom: 100px; right: 20px; background: var(--primary); color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 999; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         #back-to-top.show { opacity: 1; visibility: visible; }
 
@@ -57,6 +56,10 @@
         footer { background: #111; color: #fff; padding: 40px 20px; text-align: center; font-size: 13px; }
         .dev-by { margin-top: 15px; color: #666; }
         .dev-by a { color: var(--primary); text-decoration: none; font-weight: 700; }
+
+        /* Estilos da Aba Avaliações */
+        #page-reviews { display: none; padding: 20px; text-align: center; }
+        .review-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #eee; text-align: left; }
     </style>
 </head>
 <body>
@@ -71,8 +74,8 @@
 </header>
 
 <div class="tabs-nav">
-    <div class="tab-btn active">Cardápio</div>
-    <div class="tab-btn">Avaliações</div>
+    <div class="tab-btn active" onclick="switchTab('menu', this)">Cardápio</div>
+    <div class="tab-btn" onclick="switchTab('reviews', this)">Avaliações</div>
 </div>
 
 <div id="page-menu">
@@ -84,6 +87,19 @@
     </div>
     <nav class="category-nav" id="cat-nav"></nav>
     <div class="container" id="menu-sections"></div>
+</div>
+
+<div id="page-reviews">
+    <i class="fas fa-star" style="font-size: 40px; color: var(--gold); margin-bottom: 15px;"></i>
+    <h2>O que nossos clientes dizem</h2>
+    <div class="review-card">
+        <strong>⭐ 5.0 - Juliana S.</strong>
+        <p style="font-size: 13px; margin: 5px 0; color: #666;">O melhor X-Tudo do P10! Chegou super rápido.</p>
+    </div>
+    <div class="review-card">
+        <strong>⭐ 5.0 - Pedro Henrique</strong>
+        <p style="font-size: 13px; margin: 5px 0; color: #666;">Carne artesanal de verdade, recomendo o Combo 2.</p>
+    </div>
 </div>
 
 <div id="back-to-top" onclick="scrollToTop()">
@@ -155,6 +171,7 @@
 </footer>
 
 <script>
+    // SEU CARDÁPIO ORIGINAL COMPLETO
     const menuData = [
         { cat: "🎁 Promoções", items: [
             {n: "Combo 1", p: 21.00, d: "X-Salada (carne artesanal 60g) + porção pequena de batata frita + refri guaraná lata 350ml."},
@@ -186,7 +203,7 @@
             {n: "X-Tudo", p: 22.00, d: "Pão especial, carne artesanal 70g, bacon, calabresa, salsicha, ovo frito, presunto, muçarela, alface, tomate, milho, ketchup e maionese."},
             {n: "X-Bacon/Milho", p: 22.00, d: "Pão especial, carne artesanal 70g, bacon crocante, milho refogado com cebola, ovo frito, queijo muçarela, alface e tomate."}
         ]},
-        { cat: "🌭 Hot Dogs & Kikões", items: [
+        { cat: "hot Hot Dogs & Kikões", items: [
             {n: "Hot Dog Venezolano", p: 10.00, d: "Pão de hot dog, salsicha, cebola, cenoura, repolho, batata palha e queijo."},
             {n: "Kikão Simples", p: 10.00, d: "Pão de hot dog, salsicha, molho caseiro, queijo ralado e batata palha."},
             {n: "Kikão Especial Muçarela", p: 15.00, d: "Kikão com cobertura de queijo muçarela derretido."},
@@ -239,8 +256,11 @@
     ];
 
     let cart = [];
+    let currentItem = {};
+    let qty = 1;
 
     function init() {
+        checkStoreStatus();
         const sections = document.getElementById('menu-sections');
         const nav = document.getElementById('cat-nav');
         menuData.forEach((section, idx) => {
@@ -263,6 +283,29 @@
             });
             sections.innerHTML += sHtml + `</div>`;
         });
+    }
+
+    // FUNÇÃO PARA TROCAR ABAS
+    function switchTab(tab, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if(tab === 'menu') {
+            document.getElementById('page-menu').style.display = 'block';
+            document.getElementById('page-reviews').style.display = 'none';
+        } else {
+            document.getElementById('page-menu').style.display = 'none';
+            document.getElementById('page-reviews').style.display = 'block';
+        }
+    }
+
+    function checkStoreStatus() {
+        const hour = new Date().getHours();
+        const statusBadge = document.getElementById('status-loja');
+        if (hour >= 18 || hour < 0) {
+            statusBadge.innerText = "Aberto"; statusBadge.className = "status-badge open";
+        } else {
+            statusBadge.innerText = "Fechado"; statusBadge.className = "status-badge closed";
+        }
     }
 
     function openProduct(n, p, d) {
@@ -318,34 +361,30 @@
         const name = document.getElementById('cust-name').value;
         const addr = document.getElementById('cust-address').value;
         const type = document.getElementById('delivery-type').value;
+        const total = cart.reduce((acc, i) => acc + (i.p * i.qty), 0);
         if(!name || (type === 'entrega' && !addr)) return alert("Preencha nome e endereço!");
 
         let msg = `*🍔 BURGUER JÁ - NOVO PEDIDO*%0A%0A*Cliente:* ${name}%0A*Tipo:* ${type}%0A`;
         if(type === 'entrega') msg += `*Endereço:* ${addr}%0A`;
         msg += `%0A*ITENS:*%0A`;
-        cart.forEach(i => msg += `• ${i.qty}x ${i.n}%0A`);
+        cart.forEach(i => msg += `• ${i.qty}x ${i.n}${i.obs ? ' (Obs: '+i.obs+')' : ''}%0A`);
+        msg += `%0A*Total: R$ ${total.toFixed(2)}*`;
         window.open(`https://wa.me/5592982876189?text=${msg}`);
     }
 
     function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-
+    function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
+    
     window.onscroll = function() {
         const btn = document.getElementById('back-to-top');
-        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-            btn.classList.add('show');
-        } else {
-            btn.classList.remove('show');
-        }
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) btn.classList.add('show');
+        else btn.classList.remove('show');
     };
 
     function filterMenu() {
         const q = document.getElementById('search-input').value.toLowerCase();
-        document.querySelectorAll('.product-card').forEach(card => {
-            card.style.display = card.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
-        });
+        document.querySelectorAll('.product-card').forEach(card => card.style.display = card.innerText.toLowerCase().includes(q) ? 'flex' : 'none');
     }
-
-    function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
 
     init();
 </script>
